@@ -8,6 +8,11 @@ services:
       - "9000:9000"
     volumes:
       - ./clickhouse_data:/var/lib/clickhouse
+    healthcheck:
+      test: ["CMD", "curl -fsS http://localhost:8123/ping || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   redis:
     image: redis:7.4
@@ -19,7 +24,7 @@ services:
       retries: 5
 
   server:
-    image: '${DOCKER_IMAGE_NAME?Variable not set}:${TAG-latest}'
+    # image: '${DOCKER_IMAGE_NAME:-tokenscan_server}:${TAG:-latest}'
     container_name: tokenscan_server
     restart: always
     build:
