@@ -39,6 +39,9 @@ COPY . .
 
 ENV PYTHONPATH="/app"
 
+COPY scripts /app/scripts
+RUN chmod +x /app/scripts/*.sh
+
 EXPOSE 8000
 
 CMD ["poetry", "run", "uvicorn", "src.main:app", "--host", "0.0.0.0", "--port", "8000"]
