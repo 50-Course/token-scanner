@@ -1,6 +1,6 @@
 import os
 import secrets
-from typing import Literal
+from typing import Literal, Optional
 
 from pydantic import AnyHttpUrl, HttpUrl
 from pydantic_settings import BaseSettings
@@ -21,7 +21,7 @@ class Settings(BaseSettings):  # type: ignore
     ENVIRONMENT: Literal["local", "production"] = os.getenv("ENVIRONMENT", "local")
     SENTRY_DSN: HttpUrl | None = None
 
-    DATABASE_URI: str | None = None
+    DATABASE_URI: Optional[str]
 
     DEBUG_ENABLED: bool = os.getenv("DEBUG_ENABLED", "false").lower() == "true"
 
