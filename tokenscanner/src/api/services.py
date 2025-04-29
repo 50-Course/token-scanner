@@ -22,12 +22,13 @@ async def fetch_token_pools(chain_id: str, token_address: str) -> list[dict]:
 
         data = response.json()
 
-        if "pairs" not in data or data["pairs"] is None:
-            logger.error("Invalid response structure: %s", data)
+        if not isinstance(data, list) or len(data) == 0:
+            logger.error("Invalid or empty response structure: %s", data)
             raise TokenNotFoundError(
                 f"No pools found for {token_address} on {chain_id}"
             )
-        return data["pairs"]
+
+        return data
 
     except httpx.HTTPError as e:
         logger.error("HTTP error occurred: %s", e)
@@ -117,7 +118,7 @@ async def get_token_data(token_address: str, chain_id: str) -> TokenResponse:
     # then we return the token data (immediately, serialized) back to the handler
     # hence, faster feedback for interaction
     base_symbol = largest_pool["baseToken"]["symbol"]
-    quote_symbol = largest_pool["quoteToken"]["address"]
+    quote_symbol = largest_pool["quoteToken"].get("symbol")
 
     return TokenResponse(
         address=token_address,

@@ -3,9 +3,13 @@ import logging
 from typing import Optional
 from fastapi import APIRouter, BackgroundTasks, HTTPException, Query, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
-from src.api.exceptions import DEXScreenerAPIException, TokenNotFoundError
+from src.api.exceptions import (
+    DEXScreenerAPIException,
+    TokenNotFoundError,
+    is_valid_solana_address,
+)
 from src.api.openapi import POOL_DATA_ENDPOINT_DESCRIPTION, POOL_DATA_SUMMARY
-from src.api.services import get_token_data, save_record
+from src.api.services import get_token_data
 from src.core.db import get_db
 from src.schemas import TokenResponse
 
@@ -33,14 +37,14 @@ MAX_PAGE_COUNT = 25
 )
 async def fetch_token_info(
     background_tasks: BackgroundTasks,
-    token_address: str = Query(
+    addresses: list[str] | str = Query(
         ...,
-        description="Token address to fetch data for. \
-                          Can be a single address or a comma-separated list of addresses",
+        description="Token address(es), to fetch data for.",
     ),
     chain_id: str = Query(
         ...,
-        regex="^(sol|ethereum|bsc)$",
+        regex="^(solana|ethereum|bsc)$",
+        alias="chain_id",
         description="Blockchain to fetch token data from. Supported \
                           chains: Ethereum (ETH), Solana (SOL), Binance Smart Chain(BSC)",
     ),
@@ -50,24 +54,49 @@ async def fetch_token_info(
 ):
     result = []
 
-    addresses = [addr.strip() for addr in token_address if addr.split(",")]
+    if isinstance(addresses, str):
+        # if it's a single address, we need to split it into a list
+        # and remove any whitespace
+        addresses = [addr.strip() for addr in addresses.split(",") if addr.strip()]
+    else:
+        # if it's a list, we need to remove any whitespace
+        # and make sure it's a list of strings
+        addresses = [addr.strip() for addr in addresses]
+
     for addr in addresses:
+        if chain_id == "solana" and not is_valid_solana_address(addr):
+            logger.error(f"Invalid Solana address: {addr}")
+            raise HTTPException(
+                status_code=400,
+                detail="Solana addresses cannot start with '0x'",
+            )
         try:
             token_info = await get_token_data(addr, chain_id)
+
+            logger.debug(f"Token info for {addr} on {chain_id}: {token_info}")
             result.append(token_info)
 
             # here we paginate
             # TODO: come back to this, perhaps at later date
             if len(result) >= MAX_PAGE_COUNT:
-                pass
+                break
 
             # save to hot cache (our db) in the background
-            background_tasks.add_task(
-                save_record, chain_id, addr, token_info.largest_pool.dict(), db
-            )
+            # background_tasks.add_task(
+            #     save_record, chain_id, addr, {
+            #         "pairAddress": token_info.largest_pool.pair_address,
+            #         "baseToken": {"symbol": token_info.largest_pool.name.split("-")[0]},
+            #         "quoteToken": {"address": token_info.largest_pool.quote_token_address},
+            #         "liquidity": {"usd": str(token_info.largest_pool.liquidity_usd)},
+            #         "totalSupply": str(token_info.total_liquidity_usd),
+            #     }, db
+            # )
         except TokenNotFoundError as err:
             logger.error(f"Token {addr} not found on chain {chain_id}. Error: {err}")
-            continue
+            raise HTTPException(
+                status_code=404,
+                detail=f"No pools found for token {addr} on chain {chain_id}. Please check the address.",
+            )
         except DEXScreenerAPIException:
             raise HTTPException(
                 status_code=502,
