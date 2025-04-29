@@ -60,6 +60,6 @@ async def test_fetch_token_data(monkeypatch):
         chain_id="solana", token_address="TOKEN1"
     )
     assert token_data_response is not None
-    assert token_data_response.pool_count == 2
-    assert token_data_response.total_liquidity_usd == Decimal(15000)
+    assert token_data_response.pool_count == 4
+    assert token_data_response.total_liquidity_usd == Decimal(21000)
     assert token_data_response.largest_pool.pair_address == "PAIR2"

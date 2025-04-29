@@ -93,12 +93,29 @@ async def get_token_data(token_address: str, chain_id: str) -> TokenResponse:
 
     total_liquidity, largest_pool = calculate_network_liquidity(relevant_pools)
 
+    if not largest_pool or largest_pool is None:
+        logger.error(
+            "No largest pool found for token %s on chain %s", token_address, chain_id
+        )
+        raise TokenNotFoundError(
+            f"No valid pools found for {token_address} on {chain_id}"
+        )
+    # import pdb
+    #
+    # pdb.set_trace()
+
     # then we return the token data (immediately, serialized) back to the handler
     # hence, faster feedback for interaction
+    # base_symbol = largest_pool.get("baseToken", {}).get("symbol", "UNKNOWN")
+    # quote_symbol = largest_pool.get("quoteToken", {}).get("symbol", "UNKNOWN")
+
+    base_symbol = largest_pool["baseToken"]["symbol"]
+    quote_symbol = largest_pool["quoteToken"]["address"]
+
     return TokenResponse(
         address=token_address,
         largest_pool=PoolInfo(
-            name=f"{largest_pool['baseToken']['symbol']}-{largest_pool['quoteToken']['symbol']}",
+            name=f"{base_symbol}-{quote_symbol}",
             pool_address=largest_pool["pairAddress"],
             pair_address=largest_pool["pairAddress"],
             liquidity_usd=Decimal(largest_pool["liquidity"]["usd"]),
