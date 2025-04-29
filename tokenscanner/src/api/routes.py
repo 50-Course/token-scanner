@@ -1,10 +1,12 @@
 import logging
 
 from typing import Optional
-from fastapi import APIRouter, HTTPException, Query
+from fastapi import APIRouter, BackgroundTasks, HTTPException, Query, Depends
+from sqlalchemy.ext.asyncio import AsyncSession
 from src.api.exceptions import DEXScreenerAPIException, TokenNotFoundError
 from src.api.openapi import POOL_DATA_ENDPOINT_DESCRIPTION, POOL_DATA_SUMMARY
-from src.api.services import get_token_data
+from src.api.services import get_token_data, save_record
+from src.core.db import get_db
 from src.schemas import TokenResponse
 
 logger = logging.getLogger(__name__)
@@ -30,6 +32,7 @@ MAX_PAGE_COUNT = 25
     response_model=list[TokenResponse],
 )
 async def fetch_token_info(
+    background_tasks: BackgroundTasks,
     token_address: str = Query(
         ...,
         description="Token address to fetch data for. \
@@ -43,19 +46,25 @@ async def fetch_token_info(
     ),
     limit: Optional[int] = 10,
     offset: Optional[int] = 0,
+    db: AsyncSession = Depends(get_db),
 ):
     result = []
-
-    # if isinstance(token_address, str):
-    #     token_address = [
-    #         token_address,
-    #     ]
 
     addresses = [addr.strip() for addr in token_address if addr.split(",")]
     for addr in addresses:
         try:
             token_info = await get_token_data(addr, chain_id)
             result.append(token_info)
+
+            # here we paginate
+            # TODO: come back to this, perhaps at later date
+            if len(result) >= MAX_PAGE_COUNT:
+                pass
+
+            # save to hot cache (our db) in the background
+            background_tasks.add_task(
+                save_record, chain_id, addr, token_info.largest_pool.dict(), db
+            )
         except TokenNotFoundError as err:
             logger.error(f"Token {addr} not found on chain {chain_id}. Error: {err}")
             continue

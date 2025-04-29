@@ -1,7 +1,9 @@
 import httpx
 import logging
+from sqlalchemy.ext.asyncio import AsyncSession
 from src.api.exceptions import DEXScreenerAPIException, TokenNotFoundError
 from src.core.config import settings
+from src.models import Token
 from src.schemas import PoolInfo, TokenResponse
 from decimal import Decimal
 
@@ -63,10 +65,21 @@ def calculate_network_liquidity(pools: list[dict]) -> tuple[Decimal, dict]:
     return total, largest  # type: ignore
 
 
-def _save_record(pool: list[dict]):
-    # TODO: impleent me later, since latency and speed
-    # is a factor of ours, we should leverage `fastapi.BackgroudnTasks`
-    pass
+async def save_record(
+    chain_id: str, token_address: str, pool_data: dict, db: AsyncSession
+) -> None:
+    record = Token(
+        chain_id=chain_id,
+        address=token_address,
+        quote_token_address=pool_data["quoteToken"]["address"],
+        symbol=pool_data["baseToken"]["symbol"],
+        largest_pool_id=None,  # TODO: perhaps after the interview, i would do an SQL Function, to compute based in the frequency of appearance
+        pool_count=len(pool_data),
+        total_supply=pool_data["totalSupply"],
+        total_liquidity_usd=pool_data["liquidity"]["usd"],
+    )
+    db.add(record)
+    await db.commit()
 
 
 async def get_token_data(token_address: str, chain_id: str) -> TokenResponse:
@@ -100,15 +113,9 @@ async def get_token_data(token_address: str, chain_id: str) -> TokenResponse:
         raise TokenNotFoundError(
             f"No valid pools found for {token_address} on {chain_id}"
         )
-    # import pdb
-    #
-    # pdb.set_trace()
 
     # then we return the token data (immediately, serialized) back to the handler
     # hence, faster feedback for interaction
-    # base_symbol = largest_pool.get("baseToken", {}).get("symbol", "UNKNOWN")
-    # quote_symbol = largest_pool.get("quoteToken", {}).get("symbol", "UNKNOWN")
-
     base_symbol = largest_pool["baseToken"]["symbol"]
     quote_symbol = largest_pool["quoteToken"]["address"]
 
