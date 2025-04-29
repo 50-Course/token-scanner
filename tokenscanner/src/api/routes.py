@@ -26,7 +26,7 @@ MAX_PAGE_COUNT = 25
     response_model=list[TokenResponse],
 )
 async def fetch_token_info(
-    token_address: str | list[str] = Query(
+    token_address: str = Query(
         ...,
         description="Token address to fetch data for. \
                           Can be a single address or a comma-separated list of addresses",
@@ -42,10 +42,10 @@ async def fetch_token_info(
 ):
     result = []
 
-    if isinstance(token_address, str):
-        token_address = [
-            token_address,
-        ]
+    # if isinstance(token_address, str):
+    #     token_address = [
+    #         token_address,
+    #     ]
 
     addresses = [addr.strip() for addr in token_address if addr.split(",")]
     for addr in addresses:
