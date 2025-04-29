@@ -23,6 +23,10 @@ MAX_PAGE_COUNT = 25
     "/tokens/pools",
     summary=POOL_DATA_SUMMARY,
     description=POOL_DATA_ENDPOINT_DESCRIPTION,
+    responses={
+        404: {"description": "Token not found. Please check the address."},
+        500: {"description": "Internal server error. Please try again later."},
+    },
     response_model=list[TokenResponse],
 )
 async def fetch_token_info(
