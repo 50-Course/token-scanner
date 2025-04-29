@@ -1,0 +1,14 @@
+[tool.poetry]
+name = "tokenscanner"
+version = "0.1.0"
+description = "Address Scanner for on-chain transactions"
+authors = ["50-Course <eridotdev@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

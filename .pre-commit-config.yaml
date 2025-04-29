@@ -13,5 +13,5 @@ repos:
     rev: v0.11.7
     hooks:
       - id: ruff
-        args: [--extend-ignore=E501, --fix, --max-line-length=120]
+        args: [--extend-ignore=E501, --fix, --line-length=120]
       - id: ruff-format
