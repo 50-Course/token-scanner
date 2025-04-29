@@ -3,7 +3,7 @@ import logging
 from sqlalchemy.ext.asyncio import AsyncSession
 from src.api.exceptions import DEXScreenerAPIException, TokenNotFoundError
 from src.core.config import settings
-from src.models import Token
+from src.models import Pool, Token
 from src.schemas import PoolInfo, TokenResponse
 from decimal import Decimal
 
@@ -69,17 +69,34 @@ def calculate_network_liquidity(pools: list[dict]) -> tuple[Decimal, dict]:
 async def save_record(
     chain_id: str, token_address: str, pool_data: dict, db: AsyncSession
 ) -> None:
-    record = Token(
+    token_record = Token(
         chain_id=chain_id,
         address=token_address,
-        quote_token_address=pool_data["quoteToken"]["address"],
-        symbol=pool_data["baseToken"]["symbol"],
-        largest_pool_id=None,  # TODO: perhaps after the interview, i would do an SQL Function, to compute based in the frequency of appearance
-        pool_count=len(pool_data),
-        total_supply=pool_data["totalSupply"],
-        total_liquidity_usd=pool_data["liquidity"]["usd"],
+        quote_token_address=pool_data["quote_token_address"],
+        symbol=pool_data["name"].split("-", 1)[0],
+        pool_count=pool_data.get("pool_count", 1),
+        largest_pool_id=None,
+        total_supply=None,
+        total_liquidity_usd=pool_data["liquidity_usd"]
+        or pool_data.get("total_liquidity_usd"),
     )
-    db.add(record)
+
+    db.add(token_record)
+    await db.flush()
+
+    pool_record = Pool(
+        token_id=token_record.id,
+        name=pool_data["name"],
+        pool_address=pool_data["pool_address"],
+        pair_address=pool_data["pair_address"],
+        liquidity_usd=pool_data["liquidity_usd"],
+        quote_token_address=pool_data["quote_token_address"],
+    )
+
+    db.add(pool_record)
+
+    # we update our references to largest_pool_id with our Pool record object
+    token_record.largest_pool_id = pool_record.id
     await db.commit()
 
 
