@@ -11,12 +11,12 @@ logger = logging.getLogger(__name__)
 
 
 async def fetch_token_pools(chain_id: str, token_address: str) -> list[dict]:
-    DEX_API_BASE = f"{settings.DEXSCREENER_BASE_URI}/latest/dex"
+    DEX_POOL_API_BASE = f"{settings.DEXSCREENER_BASE_URI}/token-pairs/v1"
 
     try:
         async with httpx.AsyncClient() as client:
             response = await client.get(
-                f"{DEX_API_BASE}/pairs/{chain_id}/{token_address}"
+                f"{DEX_POOL_API_BASE}/{chain_id}/{token_address}"
             )
             response.raise_for_status()
 
