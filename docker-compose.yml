@@ -1,0 +1,46 @@
+services:
+  # we bootstrap clickhouse
+  clickhouse:
+    image: clickhouse/clickhouse-server:latest
+    container_name: clickhouse
+    ports:
+      - "8123:8123"
+      - "9000:9000"
+    volumes:
+      - ./clickhouse_data:/var/lib/clickhouse
+
+  redis:
+    image: redis:7.4
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  server:
+    image: '${DOCKER_IMAGE_NAME?Variable not set}:${TAG-latest}'
+    container_name: tokenscan_server
+    restart: always
+    build:
+      context: ./tokenscanner
+    ports:
+      - "8000:8000"
+    depends_on:
+      redis:
+        condition: service_healthy
+      clickhouse:
+        condition: service_healthy
+    env_file:
+      - ./tokenscanner/src/.env
+    environment: &common_env
+      - REDIS_URL=redis://redis:6379/0
+      - DATABASE_URL=clickhouse+http://default:@clickhouse:8123/default
+    healthcheck:
+      test: ["CMD", "curl", "-sf", "http://localhost:8000/api/v1/health-check/ || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  clickhouse_data:
