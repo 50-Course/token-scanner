@@ -7,7 +7,7 @@ app = FastAPI(
     debug=settings.DEBUG_ENABLED if settings.DEBUG_ENABLED else False,
     title=settings.PROJECT_NAME,
     summary=settings.PROJECT_DESCRIPTION,
-    version=settings.PROJECT_VERSION,
+    version="1.0.0",
     openapi_url=f"{settings.API_V1_STR}/openapi.json",
 )
 
