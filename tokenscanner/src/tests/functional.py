@@ -31,13 +31,6 @@ def mock_pools():
     ]
 
 
-@pytest.mark.asyncio
-@pytest.mark.skip
-async def test_fetch_token_data():
-    """Test the fetch_token_data function."""
-    pass
-
-
 def test_filter_relevant_pools(mock_pools):
     filtered = filter_relevant_pools(mock_pools, "solana")
 
