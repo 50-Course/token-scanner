@@ -2,8 +2,13 @@ import os
 import secrets
 from typing import Literal, Optional
 
-from pydantic import AnyHttpUrl, HttpUrl
-from pydantic_settings import BaseSettings
+from pydantic import HttpUrl
+from pydantic_settings import BaseSettings, SettingsConfigDict
+from pathlib import Path
+
+# we have the .env file right in the src folder and not the root
+BASE_DIR = Path(__file__).resolve().parent.parent
+ENV_PATH = BASE_DIR / ".env"
 
 
 class Settings(BaseSettings):  # type: ignore
@@ -16,10 +21,10 @@ class Settings(BaseSettings):  # type: ignore
     PROJECT_NAME: str = os.getenv("PROJECT_NAME", "Token Scanner")
     PROJECT_VERSION: str = "0.1.0"
 
-    CORS_ALLOWED_ORIGINS: list[AnyHttpUrl] = os.getenv("CORS_ALLOWED_ORIGINS", [])
+    CORS_ALLOWED_ORIGINS: list[str] = os.getenv("CORS_ALLOWED_ORIGINS", [])
 
     ENVIRONMENT: Literal["local", "production"] = os.getenv("ENVIRONMENT", "local")
-    SENTRY_DSN: HttpUrl | None = None
+    SENTRY_DSN: Optional[HttpUrl] = None
 
     DATABASE_URI: Optional[str]
 
@@ -35,6 +40,8 @@ class Settings(BaseSettings):  # type: ignore
         information such as transaction history, balance, and more. It is designed to be
         ultra-fast, reliable, and easy to use.
         """
+
+    model_config = SettingsConfigDict(env_file=str(ENV_PATH), env_file_encoding="utf-8")
 
 
 settings = Settings()  # type: ignore

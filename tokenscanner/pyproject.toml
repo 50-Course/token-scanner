@@ -4,7 +4,7 @@ version = "0.1.0"
 description = "Address Scanner for on-chain transactions"
 authors = ["50-Course <eridotdev@gmail.com>"]
 readme = "README.md"
-packages = [{ include = "src" }]
+packages = [{ include = "src" }, { include = "tests"}]
 
 [tool.poetry.dependencies]
 python = "^3.11"
