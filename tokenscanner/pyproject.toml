@@ -4,9 +4,15 @@ version = "0.1.0"
 description = "Address Scanner for on-chain transactions"
 authors = ["50-Course <eridotdev@gmail.com>"]
 readme = "README.md"
+packages = [{ include = "src" }]
 
 [tool.poetry.dependencies]
 python = "^3.11"
+fastapi = {extras = ["standard"], version = "^0.115.12"}
+uvicorn = "^0.34.2"
+pytest = "^8.3.5"
+pydantic = "^2.11.3"
+pydantic-settings = "^2.9.1"
 
 
 [build-system]
