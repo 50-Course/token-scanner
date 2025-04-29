@@ -50,13 +50,15 @@ async def test_fetch_token_data(monkeypatch):
 
     # we would set the mock_get_pools function to be the one that is called
     # See: https://docs.pytest.org/en/stable/how-to/monkeypatch.html
-    async def mock_get_pools():
+    async def mock_get_pools(chain_id, token_address):
         """Mock function to simulate fetching pools from the API."""
         return mocked_dex_data
 
     monkeypatch.setattr("src.api.services.fetch_token_pools", mock_get_pools)
 
-    token_data_response = await get_token_data("solana", "TOKEN1")
+    token_data_response = await get_token_data(
+        chain_id="solana", token_address="TOKEN1"
+    )
     assert token_data_response is not None
     assert token_data_response.pool_count == 2
     assert token_data_response.total_liquidity_usd == Decimal(15000)

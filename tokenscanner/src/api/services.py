@@ -79,7 +79,8 @@ async def get_token_data(token_address: str, chain_id: str) -> TokenResponse:
         pool
         for pool in pools
         if pool["chainId"].lower() == chain_id.lower()
-        and pool.get("liquidity", {}).get("usd", 0) > 0
+        and Decimal(pool.get("liquidity", {}).get("usd", 0) or 0)
+        > 0  # force coersion to decimal
     ]
 
     if not relevant_pools:
