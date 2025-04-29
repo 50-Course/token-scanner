@@ -1,0 +1,40 @@
+from sqlalchemy.orm import DeclarativeBase, relationship
+from sqlalchemy import Column, ForeignKey, Integer, String, Numeric
+
+
+class Base(DeclarativeBase):
+    pass
+
+
+class Token(Base):
+    # Tracks each token on the network
+    __tablename__ = "tokens"
+
+    id = Column(Integer, primary_key=True, index=True)
+    chain_id = Column(String, nullable=False)
+    address = Column(String, unique=True, nullable=False, index=True)
+
+    symbol = Column(String, nullable=True)
+    largest_pool_id = Column(Integer, ForeignKey("pools.id"), nullable=True)
+    pool_count = Column(Integer, default=0, nullable=False)
+
+    total_supply = Column(Numeric(precision=20, scale=4), default=0, nullable=False)
+    total_liquidity_usd = Column(
+        Numeric(precision=20, scale=4), default=0, nullable=False
+    )
+
+    largest_pool = relationship(
+        "Pool", backref="largest_pool", foreign_keys=[largest_pool_id]
+    )
+
+
+class Pool(Base):
+    # Tracks each pool on the network
+    __tablename__ = "pools"
+
+    id = Column(Integer, primary_key=True, index=True)
+    pool_address = Column(String, unique=True, nullable=False)
+    pair_address = Column(String, nullable=False)
+    liquidity_usd = Column(Numeric(precision=20, scale=4))
+    quote_token_address = Column(String, nullable=False)
+    name = Column(String, nullable=True)
