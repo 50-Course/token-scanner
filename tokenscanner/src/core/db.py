@@ -8,10 +8,14 @@ if settings.ENVIRONMENT == "production" and not settings.DATABASE_URI:
     )
 
 
-if settings.DEBUG_ENABLED and settings.ENVIRONMENT == "local":
+if (
+    settings.DEBUG_ENABLED
+    and settings.ENVIRONMENT == "local"
+    and settings.DATABASE_URI is None
+):
     # we should use sqlite for local development
     engine = create_async_engine(
-        settings.DATABASE_URI,
+        "sqlite+aiosqlite:///./test.db",
         echo=True,
     )
 
@@ -28,4 +32,4 @@ if settings.DATABASE_URI is not None:
         Dependency that provides a database session to the route handler.
         """
         async with AsyncSessionLocal() as session:
-            yield session  # type: ignore
+            return session
