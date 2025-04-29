@@ -18,7 +18,7 @@ class Token(Base):
     largest_pool_id = Column(Integer, ForeignKey("pools.id"), nullable=True)
     pool_count = Column(Integer, default=0, nullable=False)
 
-    total_supply = Column(Numeric(precision=20, scale=4), default=0, nullable=False)
+    total_supply = Column(Numeric(precision=20, scale=4), default=0, nullable=True)
     total_liquidity_usd = Column(
         Numeric(precision=20, scale=4), default=0, nullable=False
     )
@@ -26,6 +26,7 @@ class Token(Base):
     largest_pool = relationship(
         "Pool", backref="largest_pool", foreign_keys=[largest_pool_id]
     )
+    pools = relationship("Pool", backref="token")
 
 
 class Pool(Base):
@@ -33,6 +34,7 @@ class Pool(Base):
     __tablename__ = "pools"
 
     id = Column(Integer, primary_key=True, index=True)
+    token_id = Column(Integer, ForeignKey("tokens.id"), nullable=False)
     pool_address = Column(String, unique=True, nullable=False)
     pair_address = Column(String, nullable=False)
     liquidity_usd = Column(Numeric(precision=20, scale=4))
