@@ -9,7 +9,7 @@ from src.api.exceptions import (
     is_valid_solana_address,
 )
 from src.api.openapi import POOL_DATA_ENDPOINT_DESCRIPTION, POOL_DATA_SUMMARY
-from src.api.services import get_token_data
+from src.api.services import get_token_data, save_record
 from src.core.db import get_db
 from src.schemas import TokenResponse
 
@@ -82,15 +82,9 @@ async def fetch_token_info(
                 break
 
             # save to hot cache (our db) in the background
-            # background_tasks.add_task(
-            #     save_record, chain_id, addr, {
-            #         "pairAddress": token_info.largest_pool.pair_address,
-            #         "baseToken": {"symbol": token_info.largest_pool.name.split("-")[0]},
-            #         "quoteToken": {"address": token_info.largest_pool.quote_token_address},
-            #         "liquidity": {"usd": str(token_info.largest_pool.liquidity_usd)},
-            #         "totalSupply": str(token_info.total_liquidity_usd),
-            #     }, db
-            # )
+            background_tasks.add_task(
+                save_record, chain_id, addr, token_info.largest_pool.model_dump(), db
+            )
         except TokenNotFoundError as err:
             logger.error(f"Token {addr} not found on chain {chain_id}. Error: {err}")
             raise HTTPException(
