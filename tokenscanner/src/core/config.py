@@ -1,6 +1,6 @@
 import os
 import secrets
-from typing import Literal
+from typing import Literal, Optional
 
 from pydantic import AnyHttpUrl, HttpUrl
 from pydantic_settings import BaseSettings
@@ -24,6 +24,8 @@ class Settings(BaseSettings):  # type: ignore
     DATABASE_URI: str | None = None
 
     DEBUG_ENABLED: bool = os.getenv("DEBUG_ENABLED", "false").lower() == "true"
+
+    DEX_API_BASE_URL: Optional[str]
 
     PROJECT_DESCRIPTION: str = """
         Token Scanner provides initiutive API to quickly scan tokens and get their
