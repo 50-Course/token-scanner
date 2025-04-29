@@ -1,5 +1,6 @@
 import os
 import secrets
+from typing import Literal
 
 from pydantic import AnyHttpUrl, HttpUrl
 from pydantic_settings import BaseSettings
@@ -17,7 +18,12 @@ class Settings(BaseSettings):  # type: ignore
 
     CORS_ALLOWED_ORIGINS: list[AnyHttpUrl] = os.getenv("CORS_ALLOWED_ORIGINS", [])
 
+    ENVIRONMENT: Literal["local", "production"] = os.getenv("ENVIRONMENT", "local")
     SENTRY_DSN: HttpUrl | None = None
+
+    DATABASE_URI: str | None = None
+
+    DEBUG_ENABLED: bool = os.getenv("DEBUG_ENABLED", "false").lower() == "true"
 
     PROJECT_DESCRIPTION: str = """
         Token Scanner provides initiutive API to quickly scan tokens and get their
