@@ -18,8 +18,8 @@ class Settings(BaseSettings):  # type: ignore
     SERVER_NAME: str = os.getenv("SERVER_NAME", "localhost")
     SERVER_HOST: str = os.getenv("SERVER_HOST", "http://localhost")
 
-    PROJECT_NAME: str = os.getenv("PROJECT_NAME", "Token Scanner")
-    PROJECT_VERSION: str = "0.1.0"
+    PROJECT_NAME: str = "Token Scanner"
+    PROJECT_VERSION: str = "1.0.0"
 
     CORS_ALLOWED_ORIGINS: list[str] = os.getenv("CORS_ALLOWED_ORIGINS", [])
 
