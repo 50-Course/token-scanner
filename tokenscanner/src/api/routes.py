@@ -3,6 +3,7 @@ import logging
 from typing import Optional
 from fastapi import APIRouter, HTTPException, Query
 from src.api.exceptions import DEXScreenerAPIException, TokenNotFoundError
+from src.api.openapi import POOL_DATA_ENDPOINT_DESCRIPTION, POOL_DATA_SUMMARY
 from src.api.services import get_token_data
 from src.schemas import TokenResponse
 
@@ -18,7 +19,12 @@ router = APIRouter(
 MAX_PAGE_COUNT = 25
 
 
-@router.get("/tokens/pools", response_model=list[TokenResponse])
+@router.get(
+    "/tokens/pools",
+    summary=POOL_DATA_SUMMARY,
+    description=POOL_DATA_ENDPOINT_DESCRIPTION,
+    response_model=list[TokenResponse],
+)
 async def fetch_token_info(
     token_address: str | list[str] = Query(
         ...,

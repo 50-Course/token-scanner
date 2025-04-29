@@ -27,6 +27,9 @@ class Settings(BaseSettings):  # type: ignore
 
     DEXSCREENER_BASE_URI: str = "https://api.dexscreener.com"
 
+    PROJECT_SUMMARY: str = """Scan token liquidity and pool info from DEX Screener
+    across chains."""
+
     PROJECT_DESCRIPTION: str = """
         Token Scanner provides initiutive API to quickly scan tokens and get their
         information such as transaction history, balance, and more. It is designed to be
