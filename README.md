@@ -76,8 +76,17 @@ erDiagram
 
 ## Usage
 
-### Prerequisites
+The API is accessible through any client, perhaps you are the terminal guy on a sunny evening - feel free to make a request as below:
 
+```sh
+curl --location --request GET 'http://104.154.104.188:8000/api/v1/tokens/pools?addresses=FQgtfugBdpFN7PZ6NdPrZpVLDBrPGxXesi4gVu3vErhY&chain_id=solana'
+```
+
+Or you more confortable with GUI's please, access the API via your favorite API test client. See the API Docs, for information on how to configure the right parameters.
+
+You may also spin up a local copy of the reposistory to have everything right on your system. For more information, follow the below guide to hit the ground up and running.
+
+### Prerequisites
 - Docker
 - Docker Compose
 - Python 3.12 or higher
@@ -97,14 +106,15 @@ erDiagram
    ```bash
    poetry install
    ```
-3. Build and run the Docker containers:
+3. Before you build and run the Docker containers, copy the template environment variables and set it appropriately:
 
    ```bash
+    cp tokenscanner/.env.template tokenscanner/src/.env
+
     docker-compose up --build
     ```
 4. Access the API at `http://localhost:8000/api/v1/tokens/pools` (local).
-5. Use the API to scan the blockchain for transactions. See the [API
-   documentation](http://104.154.104.188:8000/api/docs) for more details.
+5. Use the API to scan the blockchain for transactions. See the [API documentation](http://104.154.104.188:8000/api/docs) for more details.
 
 ## Contributing
 
