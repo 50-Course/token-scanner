@@ -82,7 +82,11 @@ The API is accessible through any client, perhaps you are the terminal guy on a 
 curl --location --request GET 'http://104.154.104.188:8000/api/v1/tokens/pools?addresses=FQgtfugBdpFN7PZ6NdPrZpVLDBrPGxXesi4gVu3vErhY&chain_id=solana'
 ```
 
-Or you more confortable with GUI's please, access the API via your favorite API test client. See the API Docs, for information on how to configure the right parameters.
+Or you more confortable with GUI's please, access the API via your favorite API test client. For example below is another example:
+
+![image](https://github.com/user-attachments/assets/a596ba41-bbd6-4884-b94f-5ef39f075a3d)
+
+See the API Docs, for information on how to configure the right parameters.
 
 You may also spin up a local copy of the reposistory to have everything right on your system. For more information, follow the below guide to hit the ground up and running.
 
