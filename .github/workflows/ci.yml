@@ -26,3 +26,23 @@ jobs:
 
       - name: Run pre-commit
         uses: pre-commit/action@v3.0.1
+
+  tests:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Source Code
+        uses: actions/checkout@v4
+
+      - name: Spin up containers
+        run: docker compose up --build -d
+
+      # our workaround for startup lag and healthchecks
+      - name: Wait for app to be healthy (optional)
+        run: sleep 10
+
+      - name: Run Unit and Integration Tests
+        run: docker compose exec tokenscan_server pytest
+
+      - name: Teardown containers
+        run: docker compose down
