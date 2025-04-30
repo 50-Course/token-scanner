@@ -1,5 +1,7 @@
 # token-scanner
 
+[![CI](https://github.com/50-Course/token-scanner/actions/workflows/ci.yml/badge.svg)](https://github.com/50-Course/token-scanner/actions/workflows/ci.yml)
+
 The Night Watch Guild for Crypto Transactions on the Ethereum, Solana, and
 Binance Smart Chain networks.
 
