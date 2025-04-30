@@ -7,14 +7,6 @@ from fastapi.middleware.cors import CORSMiddleware
 app = FastAPI(
     debug=settings.DEBUG_ENABLED if settings.DEBUG_ENABLED else False,
     title=settings.PROJECT_NAME,
-    redoc_url="/api/docs",
-    docs_url="/",
-    # servers=[
-    #     {
-    #         "url": "http://104.154.104.188:8000",
-    #         "description": settings.ENVIRONMENT,
-    #     },
-    # ],
     license_info={
         "name": "Apache 2.0",
         "url": "https://github.com/50-Course/token-scanner/blob/main/LICENSE",
@@ -26,7 +18,9 @@ app = FastAPI(
     },
     summary=settings.PROJECT_DESCRIPTION,
     version="1.0.0",
-    openapi_url=f"{settings.API_V1_STR}/openapi.json",
+    docs_url="/",
+    redoc_url="/api/docs",
+    openapi_url="/openapi.json",
 )
 
 app.include_router(api_router, prefix=settings.API_V1_STR)
