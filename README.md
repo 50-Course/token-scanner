@@ -51,34 +51,10 @@ Example Request:
 **Relationship diagram**
 
 ```mermaid
-classDiagram
-    class ScanRequest {
-        +GET /api/v1/tokens/pools
-    }
-    class API {
-        +GET /api/v1/tokens/pools
-    }
-    class TokenScanner {
-        +GET /api/v1/tokens/pools
-    }
-    class DEXScreener {
-        +GET /api/v1/tokens/pools
-    }
-    class Ethereum {
-        +GET /api/v1/tokens/pools
-    }
-    class Solana {
-        +GET /api/v1/tokens/pools
-    }
-    class BinanceSmartChain {
-        +GET /api/v1/tokens/pools
-    }
-
-    User --> API
-    API --> TokenScanner
-    TokenScanner --> Ethereum
-    TokenScanner --> Solana
-    TokenScanner --> BinanceSmartChain
+erDiagram
+    Token ||--o{ Pool : "pools"
+    Token }o--|| Pool : "largest_pool"
+    Pool }o--|| Token : "token"
 ```
 
 ### How It Works
