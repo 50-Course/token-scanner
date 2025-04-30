@@ -16,7 +16,7 @@ if config.config_file_name is not None:
     fileConfig(config.config_file_name)
 
 
-uri: str = os.getenv("DATABASE_URI")
+uri: str = os.getenv("DATABASE_URI") or "sqlite+aiosqlite:///./tokenscanner.db"
 
 # Strip "+aiosqlite" to make Alembic use sync version
 if uri.startswith("sqlite+aiosqlite"):

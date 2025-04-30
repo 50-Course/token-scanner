@@ -9,16 +9,12 @@ app = FastAPI(
     title=settings.PROJECT_NAME,
     redoc_url="/api/docs",
     docs_url="/",
-    servers=[
-        {
-            "url": settings.SERVER_HOST,
-            "description": settings.SERVER_NAME,
-        },
-        {
-            "url": "http://104.154.104.188:8000",
-            "description": settings.ENVIRONMENT,
-        },
-    ],
+    # servers=[
+    #     {
+    #         "url": "http://104.154.104.188:8000",
+    #         "description": settings.ENVIRONMENT,
+    #     },
+    # ],
     license_info={
         "name": "Apache 2.0",
         "url": "https://github.com/50-Course/token-scanner/blob/main/LICENSE",
