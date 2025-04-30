@@ -22,8 +22,6 @@ class Settings(BaseSettings):  # type: ignore
     PROJECT_NAME: str = "Token Scanner"
     PROJECT_VERSION: str = "1.0.0"
 
-    # CORS_ALLOWED_ORIGINS: list[str] = []
-
     ENVIRONMENT: Literal["local", "production"] = os.getenv("ENVIRONMENT", "local")
     SENTRY_DSN: Optional[HttpUrl] = None
 
