@@ -19,7 +19,6 @@ if settings.SENTRY_DSN and settings.ENVIRONMENT != "local":
 if settings.CORS_ALLOWED_ORIGINS:
     from fastapi.middleware.cors import CORSMiddleware
 
-    # Allow CORS for all origins
     origins = (
         ["*"]
         if settings.CORS_ALLOWED_ORIGINS == ["*"]
@@ -28,7 +27,7 @@ if settings.CORS_ALLOWED_ORIGINS:
 
     app.add_middleware(
         CORSMiddleware,
-        allow_origins=origins,
+        allow_origins=["*"],
         allow_credentials=True,
         allow_methods=["*"],
         allow_headers=["*"],
