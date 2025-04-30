@@ -3,7 +3,8 @@
 [![CI](https://github.com/50-Course/token-scanner/actions/workflows/ci.yml/badge.svg)](https://github.com/50-Course/token-scanner/actions/workflows/ci.yml)
 
 API Reference: [API Docs](http://104.154.104.188:8000/api/docs)
-OpenAPI Playground (Swagger): [Playground]()
+
+OpenAPI Playground (Swagger): [Playground](http://104.154.104.188:8000)
 
 The Night Watch Guild for Crypto Transactions on the Ethereum, Solana, and
 Binance Smart Chain networks.
