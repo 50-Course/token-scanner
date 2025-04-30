@@ -1,6 +1,6 @@
 # Trending Tokens System Design
 
-This document outlines a backend architecture to support **displaying trending tokens** on the Bubblemaps homepage.
+This document outlines a core architecture to support **displaying trending tokens** on the Bubblemaps homepage.
 The goal is to compute and serve a "ranked list of tokens" based on "recent user interactions", specifically views of token maps via the frontend.
 
 ---
@@ -8,10 +8,14 @@ The goal is to compute and serve a "ranked list of tokens" based on "recent user
 ## Problem Statement
 
 - Every time, we have a user view a token map on the homepage, a backend API call is made.
-- These views reflect interest and engagement — we treat them as the basis for a "trending" score.
-- Our system should aggregate these interactions (in this case, we may treat them as events) in near real-time and expose a lightweight API that the homepage can call to display trending tokens.
-- Our system should be fast enough to handle spikes in traffic and provide a
-smooth user experience (<10sec max., and ideally < a few ms).
+- These views reflect interest and engagement - we treat them as the basis for a "trending" score.
+- We want to aggregate and score these views to identify <em>"trending tokens"</em>.
+- Therefore our system must/should:
+  - Aggregate these interactions (in this case, we may treat them as events) in near real-time and expose a lightweight API that the homepage can call to display trending tokens.
+  - Handle high-volume, bursty traffic.
+  - Update rankings in near- or true-real-time.
+  - Serve a lightweight endpoint or WebSocket stream to power the homepage UI.
+  - Our system should be fast enough to handle spikes in traffic and provide a smooth user experience (<10sec max., and ideally < a few ms).
 
 ---
 
@@ -87,16 +91,13 @@ with its own pros and cons. We may either  go with:
 
 ## Scaling Considerations
 
-Speaking of scaling, here are some considerations. The below are based on the
-assumption that latency is although a 'primary' concern, throughput is our focus
-here, as we would be injesting the lots of this information and analzing it
-alongside the user interaction (yes think of both as data sources for our
-injestion pipeline).
+In the context of scaling, the following are some considerations we may yet make based on the information we have of the current progress of the system.
+We are assumption that latency is although a 'primary' concern, throughput is our focus here, as we would be injesting the lots of this information and analzing it
+alongside the user interaction (yes think of both as data sources for our injestion pipeline).
 
 - Redis keys use TTLs or rolling window logic to bound memory usage.
 - Queue depth and processing lag can be monitored and auto-scaled.
-- API & workers can be containerized and deployted across replicas or (orchestrated
-  with Kubernetes).
+- API & workers can be containerized and deployted across replicas or (orchestrated with Kubernetes).
 - WebSocket layer uses publish/subscribe (FastAPI's websocket's with a bit of tweaking) to fan out trending changes, and handle reconnecting sockets to connected clients.
 
 ---
@@ -117,9 +118,3 @@ With our proposed design, the system enables us to dynamically surface trending 
 
 By relying on fast in-memory data structures for short-term analytics (Redis) and optionally streaming to longer-term storage (our ClickHouse db), we can support near real-time responsiveness for the user-facing homepage without sacrificing the ability to analyze trends over time. A beautiful step further is our WebSockets API,
 **WebSockets**, of which we go beyond static updates and unlock a live, streaming experience that keeps the homepage fresh without unnecessary polling.
-
-This approach is:
-- **Write-efficient** at the ingestion layer.
-- **Read-optimized** for UI consumption.
-- **Flexible** enough to evolve our ranking logic.
-- **Real-time ready**.
