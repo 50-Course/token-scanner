@@ -1,9 +1,8 @@
 import os
 import secrets
-from typing import Literal, Optional, Annotated
+from typing import Literal, Optional, Annotated, Any
 
 from pydantic import HttpUrl, AnyUrl, BeforeValidator, computed_field
-from pydantic_core import parse_cors
 
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from pathlib import Path
@@ -11,6 +10,14 @@ from pathlib import Path
 # we have the .env file right in the src folder and not the root
 BASE_DIR = Path(__file__).resolve().parent.parent
 ENV_PATH = BASE_DIR / ".env"
+
+
+def parse_cors(v: Any) -> list[str] | str:
+    if isinstance(v, str) and not v.startswith("["):
+        return [i.strip() for i in v.split(",")]
+    elif isinstance(v, list | str):
+        return v
+    raise ValueError(v)
 
 
 class Settings(BaseSettings):  # type: ignore
