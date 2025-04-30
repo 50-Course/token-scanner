@@ -1,0 +1,1 @@
+- Single endpoint (clean enough) to handle all the logic
