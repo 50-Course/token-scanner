@@ -1,8 +1,8 @@
 import os
 import secrets
-from typing import Literal, Optional, Annotated, Any
+from typing import Literal, Optional
 
-from pydantic import HttpUrl, AnyUrl, BeforeValidator, computed_field
+from pydantic import HttpUrl
 
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from pathlib import Path
@@ -10,14 +10,6 @@ from pathlib import Path
 # we have the .env file right in the src folder and not the root
 BASE_DIR = Path(__file__).resolve().parent.parent
 ENV_PATH = BASE_DIR / ".env"
-
-
-def parse_cors(v: Any) -> list[str] | str:
-    if isinstance(v, str) and not v.startswith("["):
-        return [i.strip() for i in v.split(",")]
-    elif isinstance(v, list | str):
-        return v
-    raise ValueError(v)
 
 
 class Settings(BaseSettings):  # type: ignore
@@ -30,14 +22,7 @@ class Settings(BaseSettings):  # type: ignore
     PROJECT_NAME: str = "Token Scanner"
     PROJECT_VERSION: str = "1.0.0"
 
-    CORS_ALLOWED_ORIGINS: Annotated[
-        list[AnyUrl] | str, BeforeValidator(parse_cors)
-    ] = []
-
-    @computed_field  # type: ignore[prop-decorator]
-    @property
-    def all_cors_origins(self) -> list[str]:
-        return [str(origin).rstrip("/") for origin in self.CORS_ALLOWED_ORIGINS]
+    # CORS_ALLOWED_ORIGINS: list[str] = []
 
     ENVIRONMENT: Literal["local", "production"] = os.getenv("ENVIRONMENT", "local")
     SENTRY_DSN: Optional[HttpUrl] = None
