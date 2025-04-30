@@ -23,6 +23,9 @@ The goal is to compute and serve a "ranked list of tokens" based on "recent user
 
 <em>To be added later - Whimscial perhaps, Vim buffer isn't rendering my ascii on readme</em>
 
+> Update: Please see the diagram on Whimscial:
+> [link](https://whimsical.com/trending-token-system-architecture-5E46ToubcV8A2nwybTqjmq@NKBbAEvLSyiNd49DVLcAf4PuCiFSNNVbT)
+
 ---
 
 ## Components
