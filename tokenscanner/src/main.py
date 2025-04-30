@@ -8,7 +8,7 @@ app = FastAPI(
     debug=settings.DEBUG_ENABLED if settings.DEBUG_ENABLED else False,
     title=settings.PROJECT_NAME,
     redoc_url="/api/docs",
-    docs_url="",
+    docs_url="/",
     servers=[
         {
             "url": settings.SERVER_HOST,

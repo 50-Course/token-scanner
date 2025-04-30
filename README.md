@@ -2,6 +2,9 @@
 
 [![CI](https://github.com/50-Course/token-scanner/actions/workflows/ci.yml/badge.svg)](https://github.com/50-Course/token-scanner/actions/workflows/ci.yml)
 
+API Reference: [API Docs](http://104.154.104.188:8000/api/docs)
+OpenAPI Playground (Swagger): [Playground]()
+
 The Night Watch Guild for Crypto Transactions on the Ethereum, Solana, and
 Binance Smart Chain networks.
 
@@ -96,7 +99,7 @@ erDiagram
     ```
 4. Access the API at `http://localhost:8000/api/v1/tokens/pools` (local).
 5. Use the API to scan the blockchain for transactions. See the [API
-   documentation]() for more details.
+   documentation](http://104.154.104.188:8000/api/docs) for more details.
 
 ## Contributing
 
