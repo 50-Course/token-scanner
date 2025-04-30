@@ -1,8 +1,10 @@
 import os
 import secrets
-from typing import Literal, Optional
+from typing import Literal, Optional, Annotated
 
-from pydantic import HttpUrl
+from pydantic import HttpUrl, AnyUrl, BeforeValidator, computed_field
+from pydantic_core import parse_cors
+
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from pathlib import Path
 
@@ -22,6 +24,14 @@ class Settings(BaseSettings):  # type: ignore
     PROJECT_VERSION: str = "1.0.0"
 
     # CORS_ALLOWED_ORIGINS: list[str] = ["*"]
+    CORS_ALLOWED_ORIGINS: Annotated[
+        list[AnyUrl] | str, BeforeValidator(parse_cors)
+    ] = []
+
+    @computed_field  # type: ignore[prop-decorator]
+    @property
+    def all_cors_origins(self) -> list[str]:
+        return [str(origin).rstrip("/") for origin in self.CORS_ALLOWED_ORIGINS]
 
     ENVIRONMENT: Literal["local", "production"] = os.getenv("ENVIRONMENT", "local")
     SENTRY_DSN: Optional[HttpUrl] = None

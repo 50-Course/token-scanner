@@ -16,14 +16,26 @@ app.include_router(api_router, prefix=settings.API_V1_STR)
 if settings.SENTRY_DSN and settings.ENVIRONMENT != "local":
     sentry_sdk.init(dsn=str(settings.SENTRY_DSN), enable_tracing=True)
 
-if settings.CORS_ALLOWED_ORIGINS:
-    from fastapi.middleware.cors import CORSMiddleware
 
-    origins = (
-        ["*"]
-        if settings.CORS_ALLOWED_ORIGINS == ["*"]
-        else settings.CORS_ALLOWED_ORIGINS
-    )
+# if settings.CORS_ALLOWED_ORIGINS:
+# from fastapi.middleware.cors import CORSMiddleware
+#
+#     origins = (
+#         ["*"]
+#         if settings.CORS_ALLOWED_ORIGINS == ["*"]
+#         else settings.CORS_ALLOWED_ORIGINS
+#     )
+#
+#     app.add_middleware(
+#         CORSMiddleware,
+#         allow_origins=["*"],
+#         allow_credentials=True,
+#         allow_methods=["*"],
+#         allow_headers=["*"],
+#     )
+
+if settings.all_cors_origins:
+    from fastapi.middleware.cors import CORSMiddleware
 
     app.add_middleware(
         CORSMiddleware,
