@@ -12,7 +12,7 @@ Binance Smart Chain networks.
 > for on-chain analysis. This is the goal of the Night Watch Guild.
 
 - Follows REST architecture
-- Ultrafast (~100ms response time)
+- Fast (~2s response time)
 - Simple, initutive interface for Querying Data (GET)
 - Fully containerized using Docker
 - And, Bootstrapped using Docker Compose
@@ -20,6 +20,20 @@ Binance Smart Chain networks.
 ### System Design
 
 **The Architecture**
+
+Token Scanner is designed to be a simple and efficient way to scan the
+blockchain for transactions. It provides a single API endpoint that allows
+users to scan a blockchain for transactions. At the moment, only three on-chain
+scans are permitted; `Ethereum`, `Solana` and `Binance Smart Chain` (ongoing support/development).
+
+```mermaid
+graph TD
+    A[User] -->|GET| B[API]
+    B -->|GET| C[TokenScanner]
+    C -->|GET| D[Ethereum]
+    C -->|GET| E[Solana]
+    C -->|GET| F[BinanceSmartChain]
+```
 
 **Proposed API Design**
 
@@ -38,26 +52,30 @@ Example Request:
 
 ```mermaid
 classDiagram
+    class ScanRequest {
+        +GET /api/v1/tokens/pools
+    }
+    class API {
+        +GET /api/v1/tokens/pools
+    }
     class TokenScanner {
-        +scan()
-        +getTransactions()
-        +getTransactionDetails()
+        +GET /api/v1/tokens/pools
+    }
+    class DEXScreener {
+        +GET /api/v1/tokens/pools
     }
     class Ethereum {
-        +scan()
-        +getTransactions()
-        +getTransactionDetails()
+        +GET /api/v1/tokens/pools
     }
     class Solana {
-        +scan()
-        +getTransactions()
-        +getTransactionDetails()
+        +GET /api/v1/tokens/pools
     }
     class BinanceSmartChain {
-        +scan()
-        +getTransactions()
-        +getTransactionDetails()
+        +GET /api/v1/tokens/pools
     }
+
+    User --> API
+    API --> TokenScanner
     TokenScanner --> Ethereum
     TokenScanner --> Solana
     TokenScanner --> BinanceSmartChain
@@ -71,6 +89,36 @@ classDiagram
 3. The scanner scans the blockchain and returns the transactions to the API.
 
 ## Usage
+
+### Prerequisites
+
+- Docker
+- Docker Compose
+- Python 3.12 or higher
+- Poetry
+
+### Installation
+
+1. Clone the repository:
+
+   ```bash
+   git clone https://github.com/50-Course/token-scanner.git
+
+    cd token-scanner
+    ```
+2. Install dependencies using Poetry:
+
+   ```bash
+   poetry install
+   ```
+3. Build and run the Docker containers:
+
+   ```bash
+    docker-compose up --build
+    ```
+4. Access the API at `http://localhost:8000/api/v1/tokens/pools` (local).
+5. Use the API to scan the blockchain for transactions. See the [API
+   documentation]() for more details.
 
 ## Contributing
 
