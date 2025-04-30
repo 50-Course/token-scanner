@@ -34,6 +34,10 @@ jobs:
       - name: Checkout Source Code
         uses: actions/checkout@v4
 
+      - name: Set up environment variables
+        run: |
+          echo "DATABASE_URI=sqlite+aiosqlite:///./tokenscanner.db" > tokenscanner/src/.env
+
       - name: Spin up containers
         run: docker compose up --build -d
 
