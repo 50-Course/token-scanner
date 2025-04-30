@@ -72,7 +72,7 @@ async def save_record(
     token_record = Token(
         chain_id=chain_id,
         address=token_address,
-        quote_token_address=pool_data["quote_token_address"],
+        # quote_token_address=pool_data["quote_token_address"],
         symbol=pool_data["name"].split("-", 1)[0],
         pool_count=pool_data.get("pool_count", 1),
         largest_pool_id=None,

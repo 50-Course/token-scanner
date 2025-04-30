@@ -26,7 +26,7 @@ class Token(Base):
     largest_pool = relationship(
         "Pool", backref="largest_pool", foreign_keys=[largest_pool_id]
     )
-    pools = relationship("Pool", backref="token")
+    pools = relationship("Pool", backref="token", foreign_keys="[Pool.token_id]")
 
 
 class Pool(Base):
