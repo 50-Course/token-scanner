@@ -43,10 +43,19 @@ jobs:
 
       # our workaround for startup lag and healthchecks
       - name: Wait for app to be healthy (optional)
-        run: sleep 10
+        run: |
+          for i in {1..10}; do
+            STATUS=$(docker compose ps --services --filter "status=running" | grep tokenscan_server || true)
+            if [ "$STATUS" = "tokenscan_server" ]; then
+              echo "tokenscan_server is running!"
+              break
+            fi
+            echo "Waiting for tokenscan_server to be up..."
+            sleep 3
+          done
 
       - name: Run Unit and Integration Tests
-        run: docker compose exec tokenscan_server pytest
+        run: docker compose exec -T tokenscan_server pytest
 
       - name: Teardown containers
         run: docker compose down
