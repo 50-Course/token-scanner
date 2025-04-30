@@ -37,7 +37,11 @@ services:
       - ./tokenscanner/src/.env
     environment: &common_env
       - REDIS_URL=redis://redis:6379/0
-      - DATABASE_URL=clickhouse+http://default:default@clickhouse:8123/default
+      # it seems, migrating from async sqlite from clickhouse is trival, would
+      # revisit later,
+      # NOTE: I need to revisit this: https://clickhouse-sqlalchemy.readthedocs.io/en/latest/connection.html
+      # - DATABASE_URL=clickhouse+http://default:default@clickhouse:8123/default
+      - DATABASE_URI=sqlite+aiosqlite:///./tokenscanner.db
     healthcheck:
       test: ["CMD", "curl", "-sf", "http://localhost:8000/api/v1/health-check/ || exit 1"]
       interval: 10s

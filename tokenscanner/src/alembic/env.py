@@ -1,3 +1,4 @@
+import os
 from logging.config import fileConfig
 
 from sqlalchemy import engine_from_config
@@ -13,6 +14,15 @@ config = context.config
 # This line sets up loggers basically.
 if config.config_file_name is not None:
     fileConfig(config.config_file_name)
+
+
+uri: str = os.getenv("DATABASE_URI")
+
+# Strip "+aiosqlite" to make Alembic use sync version
+if uri.startswith("sqlite+aiosqlite"):
+    uri = uri.replace("sqlite+aiosqlite", "sqlite")
+
+config.set_main_option("sqlalchemy.url", uri)
 
 # add your model's MetaData object here
 # for 'autogenerate' support

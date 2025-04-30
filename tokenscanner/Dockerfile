@@ -39,7 +39,9 @@ COPY . .
 
 ENV PYTHONPATH="/app"
 
-COPY scripts /app/scripts
+# RUN mkdir -p /app/tmp
+
+COPY ./scripts /app/scripts
 RUN chmod +x /app/scripts/*.sh
 
 EXPOSE 8000

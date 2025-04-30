@@ -18,6 +18,8 @@ sqlalchemy = "^2.0.40"
 sentry-sdk = "^2.27.0"
 pytest-asyncio = "^0.26.0"
 aiosqlite = "^0.21.0"
+clickhouse-connect = "^0.8.17"
+clickhouse-sqlalchemy = "^0.3.2"
 
 
 [tool.poetry.group.dev.dependencies]
