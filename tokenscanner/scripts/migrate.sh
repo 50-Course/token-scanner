@@ -1,6 +1,7 @@
-# This script is used to run the Alembic migrations for the database.
-!/usr/bin/env bash
+#!/bin/bash
 set -euo pipefail
+
+# This script is used to run the Alembic migrations for the database.
 
 if [-z "${DATABASE_URL:-}"]; then
   echo "ERROR: DATABASE_URL is not set. Please set it before running this script."

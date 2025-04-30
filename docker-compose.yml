@@ -8,11 +8,10 @@ services:
       - "9000:9000"
     volumes:
       - ./clickhouse_data:/var/lib/clickhouse
-    healthcheck:
-      test: ["CMD", "curl -fsS http://localhost:8123/ping || exit 1"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
+    environment:
+      - CLICKHOUSE_USER=default
+      - CLICKHOUSE_PASSWORD=default
+      - CLICKHOUSE_DB=default
 
   redis:
     image: redis:7.4
@@ -34,13 +33,11 @@ services:
     depends_on:
       redis:
         condition: service_healthy
-      clickhouse:
-        condition: service_healthy
     env_file:
       - ./tokenscanner/src/.env
     environment: &common_env
       - REDIS_URL=redis://redis:6379/0
-      - DATABASE_URL=clickhouse+http://default:@clickhouse:8123/default
+      - DATABASE_URL=clickhouse+http://default:default@clickhouse:8123/default
     healthcheck:
       test: ["CMD", "curl", "-sf", "http://localhost:8000/api/v1/health-check/ || exit 1"]
       interval: 10s
