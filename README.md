@@ -2,11 +2,12 @@
 
 [![CI](https://github.com/50-Course/token-scanner/actions/workflows/ci.yml/badge.svg)](https://github.com/50-Course/token-scanner/actions/workflows/ci.yml)
 
-> UPDATE (May 8 '25 19:34): I have just received important notification an hour ago that the server running
+> UPDATE (May 8 '25 19:34): I have just received important notification an hour ago that the server (GCP) running
 > this application had been shutdown due to billing issue - as a temporary
 > measure, I have redeployed out here on:
 >
-> Host: [https://token-scanner-2y31.onrender.com](https://token-scanner-2y31.onrender.com). Please change host accordingly.
+> New Host: [https://token-scanner-2y31.onrender.com](https://token-scanner-2y31.onrender.com). Please change host accordingly.
+> Former Host: [http://104.154.104.188:8000/api/docs](http://104.154.104.188:8000/api/docs)
 >
 > Hence, new [API Docs](https://token-scanner-2y31.onrender.com/api/docs)
 
