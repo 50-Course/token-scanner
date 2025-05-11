@@ -8,8 +8,8 @@ set -euo pipefail
 #   exit 1
 # fi
 
-echo "[ALEMBIC|ENTRYPOINT]: Running initial migrations..."
-alembic revision --autogenerate -m "Initial migration"
+# echo "[ALEMBIC|ENTRYPOINT]: Running initial migrations..."
+# alembic revision --autogenerate -m "Initial migration"
 echo "[ALEMBIC|ENTRYPOINT]: Applying database migrations..."
 alembic upgrade head
 echo "[ALEMBIC|ENTRYPOINT]: Database migrations completed..."
