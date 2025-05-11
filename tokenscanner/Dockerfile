@@ -28,7 +28,8 @@ RUN apk update && apk add --no-cache \
     build-base
 
 RUN curl -sSL https://install.python-poetry.org | python3 - && \
-    ln -s "$POETRY_HOME/bin/poetry" /usr/local/bin/poetry
+    ln -s "$POETRY_HOME/bin/poetry" /usr/local/bin/poetry && \
+    poetry --version
 
 WORKDIR /app
 
