@@ -55,7 +55,8 @@ jobs:
       #     done
 
       - name: Run Unit and Integration Tests
-        run: docker compose exec server pytest
+        # run: docker compose exec server pytest
+        run: docker compose run --rm server pytest -n 1
 
       - name: Teardown containers
         run: docker compose down
