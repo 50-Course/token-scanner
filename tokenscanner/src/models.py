@@ -1,5 +1,5 @@
+from sqlalchemy import Column, ForeignKey, Integer, Numeric, String
 from sqlalchemy.orm import DeclarativeBase, relationship
-from sqlalchemy import Column, ForeignKey, Integer, String, Numeric
 
 
 class Base(DeclarativeBase):
@@ -15,7 +15,11 @@ class Token(Base):
     address = Column(String, unique=True, nullable=False, index=True)
 
     symbol = Column(String, nullable=True)
-    largest_pool_id = Column(Integer, ForeignKey("pools.id"), nullable=True)
+    largest_pool_id = Column(
+        Integer,
+        ForeignKey("pools.id", use_alter=True, name="fk_largest_pool_id"),
+        nullable=True,
+    )
     pool_count = Column(Integer, default=0, nullable=False)
 
     total_supply = Column(Numeric(precision=20, scale=4), default=0, nullable=True)
