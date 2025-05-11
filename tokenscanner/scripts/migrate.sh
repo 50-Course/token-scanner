@@ -1,7 +1,6 @@
 #!/bin/bash
 set -euo pipefail
 
-
 # This script is used to run the Alembic migrations for the database.
 
 # if [ -z "${DATABASE_URI:-}" ]; then
@@ -9,5 +8,9 @@ set -euo pipefail
 #   exit 1
 # fi
 
-alembic -c /app/alembic.ini upgrade head
-# alembic revision --autogenerate -m "Initial migration"
+echo "[ALEMBIC|ENTRYPOINT]: Running initial migrations..."
+alembic revision --autogenerate -m "Initial migration"
+echo "[ALEMBIC|ENTRYPOINT]: Applying database migrations..."
+alembic upgrade head
+echo "[ALEMBIC|ENTRYPOINT]: Database migrations completed..."
+# alembic -c /app/alembic.ini upgrade head

@@ -14,7 +14,7 @@ fi
 # fi
 
 # we migrate
-echo "[ENTRYPOINT]: Running database migrations..."
+echo "[ENTRYPOINT]: Beginning database migrations..."
 /app/scripts/migrate.sh
 
 # finally, we run the server
